@@ -113,6 +113,40 @@ comment - see [ruff's noqa syntax][ruff-error-suppression].
 * [Notify Config][Notify-API-pyproject]: A production config to base off
 * [Ruff error codes list][ruff-error-codes-list]
 
+## Pre-commit hooks
+
+We use [pre-commit][] to ensure that committed code meets basic standards for formatting,
+and will make basic fixes for you to save time and back-and-forths during PR review.
+
+Install pre-commit system-wide with, eg `brew install pre-commit`. Then, install the hooks
+in your repository with `pre-commit install --install-hooks`.
+
+The following is an example from [Notify API][notifications-api-pre-commit] for you to use
+as a starting point. Ensure the revisions of `ruff` and `black` match the versions you
+install in your pip environment, or you may find that your pre-commit hooks and your local
+versions of the tools overwrite each other.
+
+```yaml
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.3.0
+  hooks:
+  - id: trailing-whitespace
+  - id: end-of-file-fixer
+  - id: check-yaml
+  - id: debug-statements
+- repo: https://github.com/charliermarsh/ruff-pre-commit
+  rev: 'v0.0.275'
+  hooks:
+    - id: ruff
+      args: [--fix, --exit-non-zero-on-fix]
+- repo: https://github.com/psf/black
+  rev: 23.10.1
+  hooks:
+    - id: black
+      name: black (python)
+```
+
 ## Environments
 
 This manual advises the use of [Pyenv](https://github.com/pyenv/pyenv) to manage different versions of Python you have installed.
@@ -257,3 +291,6 @@ file otherwise.
 [ruff-error-suppression]: https://docs.astral.sh/ruff/linter/#error-suppression
 [ruff-error-codes-list]: https://docs.astral.sh/ruff/rules/
 [Notify-api-pyproject]: https://github.com/alphagov/notifications-api/blob/0f4f6ce1e4f3fb22731ca426e8a17a2b154e3f8f/pyproject.toml
+
+[pre-commit]: https://pre-commit.com/
+[notifications-api-pre-commit]: https://github.com/alphagov/notifications-api/blob/main/.pre-commit-config.yaml
